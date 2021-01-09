@@ -1,331 +1,7 @@
--- Урок 4
--- CRUD операции
-
--- Работа с БД vk
--- Загружаем дамп консольным клиентом
-DROP DATABASE vk;
-CREATE DATABASE vk;
-USE vk;
-
-SELECT * FROM users;
-
-
--- Переходим в папку с дампом (/home/user)
--- mysql -u root -p vk < vk.dump.sql
--- mysql vk < vk.dump.sql
-
--- Загружаем через выполнение скрипта в DBeaver
-
--- ************** Дорабатываем БД
-/*
-Вариант 1
-telephone и email выделены в отдельные таблички со связью с users при помощи foreign key.
-Т.к. адресов почты и телефонов может быть больше одного.
-
-По-хорошему все личные данные юзера неплохо было бы выделить в разные таблицы, чтобы users содержала только id,
-updated/created и статус пользователя и (хотя и нежелательно) логин.
-
-В таблице Profile, gender сделан boolean для экономии места и добавил foreign key для ссылки на users.
-
-Немного по таблицам раскидал FOREIGN KEYS для лучшей связности. Не добавлял, но надо бы - UUID в качестве id для всех таблиц.
-
-Вариант 2
-Из доработок - поля с именем и фамилией перенесла в profiles.
-Логика следующая: users - таблица, используемая для идентификации пользователя,
-пользователь сам ее менять будет реже, чем данные в profiles.
-
-Плюс на изменения телефонов и email'ов отдельно запрашивается подтверждение,
-изменение этой информации и дата оного - очень важна. (?)
-
-Вариант 3
-1. Поле пол можно вынести в отдельный справочник для того,
-чтобы возможные варианты были заданы не программно, а выбирались из БД.
-По 1 символу не всегда можно понять что за пол подразумевается https://subscribe.ru/group/razumno-o-svoem-i-nabolevshem/6678982/
-Это также будет удобней для построения запросов, т.к., если нет доступа к программной обололочке,
-то для понимания возможных вариантов пола не будет необходимости перебирать всю базу
-и выбирать уникальные значения по данному полю. 
-
-2. Можно избавиться от возможной избыточности в таблице frienship,
-когда и первый и второй пользователь отпраявят запрос на дружбу друг другу. UNIQUE (friend_id, user_id) (?)
-*/
-
-/*
-Из варианта 1
-Контактную информацию вынести в отдельную таблицу (email, телефон и т.д.)
-*/
-
-CREATE TABLE contacts (
-  id int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Идентификатор сроки',
-  user_id int(10) UNSIGNED NOT NULL COMMENT 'Ссылка на профиль пользователя',
-  contact_type varchar(30) COMMENT 'Тип контакта',
-  contact_info varchar(1000) COMMENT 'контактная информация',
-  created_at datetime DEFAULT current_timestamp() COMMENT 'Время создания строки',
-  updated_at datetime DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Время обновления строки',
-  PRIMARY KEY (id)
-) COMMENT='Контактная информация';
-
-/*
-Из варианта 2
-Вынести имя и фамилию в profiles
-*/
-
-ALTER TABLE profiles
-  ADD first_name varchar(100) NOT NULL COMMENT 'Имя пользователя' AFTER country,
-  ADD last_name varchar(100)  NOT NULL COMMENT 'Фамилия пользователя' AFTER first_name
-;
-
-/*
-Из варианта 3
-Справочник для полов
-*/
-
-CREATE TABLE gender (
-  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор строки", 
-  gender VARCHAR(25) COMMENT "Название пола",
-  gender_info VARCHAR(150) COMMENT "Информация о поле",
-  active BOOLEAN COMMENT "Активен/Неактивен. Доступность для выбора",
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT "Время создания строки",  
-  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT "Время обновления строки"
-) COMMENT "Варианты полов";
-
-ALTER TABLE profiles
-ADD gender_id INT NOT NULL COMMENT "Ссылка на пол" AFTER gender;
-
-DESC profiles;
-SELECT * FROM profiles;
-
-/*  
-Дополнительно: добавить справочник статусов
-*/
-CREATE TABLE user_statuses (
-  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "Идентификатор строки", 
-  name VARCHAR(100) NOT NULL COMMENT "Название статуса (уникально)",
-  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT "Время создания строки",  
-  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT "Время обновления строки"
-) COMMENT "Справочник стран";  
-
-UPDATE profiles SET status = null;
-
-SELECT * FROM user_statuses;
-
-INSERT INTO user_statuses (name) VALUES
- ('single'),
- ('married');
-
-ALTER TABLE profiles RENAME COLUMN status TO user_status_id; 
-ALTER TABLE profiles MODIFY COLUMN user_status_id INT UNSIGNED; 
-DESCRIBE profiles;
-SELECT * FROM profiles;
-
-
--- ************** Дорабатываем тестовые данные
--- Анализируем данные пользователей
-SELECT * FROM users LIMIT 10;
--- Смотрим структуру таблицы пользователей
-DESC users;
-
--- Дата обновления не должна быть раньше даты создания  
-UPDATE users SET updated_at = CURRENT_TIMESTAMP()
-WHERE updated_at < created_at;
-
--- Анализируем данные
-SELECT * FROM gender LIMIT 10;
-DESC gender;
-
--- Заполняем справочник полов (при необходимости)
-INSERT INTO gender (gender, gender_info) VALUES
- ('M', 'Мужской'),
- ('F', 'Женский');
-
--- Анализируем данные
-SELECT * FROM user_statuses LIMIT 10;
-DESC user_statuses;
-
--- Заполняем справочник статусов (при необходимости)
-INSERT INTO user_statuses (name) VALUES
- ('Single'),
- ('Married');
-
--- Анализируем данные
-SELECT * FROM profiles LIMIT 10;
-DESC profiles;
-
--- Заполняем значения полов в profiles
--- SELECT id FROM gender ORDER BY rand() LIMIT 1;
-UPDATE profiles SET gender_id = (SELECT id FROM gender ORDER BY rand() LIMIT 1); 
--- SELECT floor(1 + RAND() * 2);
-
--- Проверяем id в user_statuses и заполняем ими соответствующее поле profiles
--- select * from user_statuses 
-UPDATE profiles SET user_status_id = floor(1 + RAND() * 2); 
-
--- Переносим значения first_name и last_name из users в profiles
-UPDATE profiles p SET p.first_name = 
-(SELECT u.first_name FROM users u WHERE u.id = p.user_id); 
-UPDATE profiles p SET p.last_name = 
-(SELECT u.last_name FROM users u WHERE u.id = p.user_id); 
-
--- удаляем столбцы, которые перенесли в друге таблицы
-ALTER TABLE profiles DROP COLUMN gender;
-ALTER TABLE users DROP COLUMN first_name, DROP COLUMN last_name;
-
--- Анализируем данные
-SELECT * FROM contacts LIMIT 10;
-DESC contacts;
-
--- Переносим email и phone каждого пользователя из users в contacts
-INSERT INTO contacts (user_id, contact_type, contact_info)
-SELECT id, 'email', email FROM users
-UNION ALL
-SELECT id, 'phone', phone FROM users;
-
--- Анализируем данные
-
-SELECT * FROM messages LIMIT 10;
-DESC messages;
-
--- Эмулируем ситуацию, когда пользователь пишет сам себе, чтобы далее её исправить
--- UPDATE messages SET from_user_id = id, to_user_id = id;
-
--- заполняем случайными значениями, от кого и кому сообщение
-UPDATE messages SET
-  from_user_id = floor(1 + RAND() * 100),
-  to_user_id = floor(1 + RAND() * 100)
-;
-
--- Анализируем данные
-SELECT * FROM media_types LIMIT 10;
-DESC media_types;
-
--- Заполняем справочник типов медиа (при необходимости)
-INSERT INTO media_types (name) VALUES
- ('Video'),
- ('Audio'),
- ('Image');
-
--- Анализируем данные
-SELECT * FROM media LIMIT 10;
-DESC media;
-
--- Заполняем media с id типаа от 1 до 3 
-UPDATE media SET
-  media_type_id = floor(1 + RAND() * 3);
-
- -- Анализируем данные
-SELECT * FROM friendship_statuses LIMIT 10;
-DESC friendship_statuses;
-
--- Очищаем таблицу friendship_statuses (при необходимости)
--- При TRUNCATE нумерация новых строк снова будет начинаться с 1
-TRUNCATE friendship_statuses;
-
--- Заполняем справочник статусов дружбы (при необходимости)
-INSERT INTO friendship_statuses (name)
-VALUES ('Requested'), ('Approved'), ('Declined');
-
--- Анализируем данные
-SELECT * FROM friendship LIMIT 10;
-DESC friendship;
-
--- Обновляем таблицу дружбы. Вариант 1
-UPDATE friendship SET
-  user_id   = floor(1 + RAND() * 100), 
-  friend_id = floor(1 + RAND() * 100),
-  status_id = floor(1 + RAND() * 3) 
-;
-
--- Обновляем таблицу дружбы. Вариант 2
--- Несмотря на то, что данный вариант длиннее/сложнее, желательно при заполнении таблиц тестовыми данными
--- везде использовать такой подход, т.к. в данном случае нет необходимости,
--- чтобы id в справочниках и связанных таблицах начинались с 1 и шли последовательно
--- Всегда будут подставляться только те значения, которые есть в связанных таблицах 
-UPDATE friendship SET
-  user_id   = (SELECT id FROM users ORDER BY rand() LIMIT 1), 
-  friend_id = (SELECT id FROM users ORDER BY rand() LIMIT 1),
-  status_id = (SELECT id FROM friendship_statuses ORDER BY rand() LIMIT 1) 
-;
-
--- Анализируем данные
-SELECT * FROM communities LIMIT 10;
-DESC communities;
--- Удаляем 
-DELETE FROM communities;
--- Создаем несколько (при необходимости)
-INSERT INTO communities (name) values ('Популярная музыка');
-INSERT INTO communities (name) values ('Экскурсии');
-INSERT INTO communities (name) values ('Школа танцев');
--- Обратим внимание, что при выполнении DELETE и последующей вставке id первой записи начинается не с 1 
-SELECT * FROM communities LIMIT 10;
-
--- Анализируем данные
-SELECT * FROM communities_users LIMIT 10;
-DESC communities_users;
-
--- Очищаем таблицу пользователей сообществ(групп) (при необходимости)
-DELETE FROM communities_users;
-
--- Несколько раз выполним запрос, каждое выполнение которого
--- будет добавлять по 1 случайному пользователю в каждую группу 
--- В некоторых случаях может выдаваться ошибка, означающая, что случайном в наборе
--- вставляемых данных в группе уже есть этот пользователь
--- Duplicate entry '..-..' for key 'communities_users.PRIMARY'
--- Данную ошибку можно пропустить
-INSERT INTO communities_users (community_id, user_id)
-SELECT id, (SELECT id FROM users ORDER BY rand() LIMIT 1)
- FROM communities;
-
--- Анализируем данные
-SELECT * FROM profiles;
-
--- Заполним photo_id ссылками на случайные media из набора, содержащего только изображения
-UPDATE profiles SET photo_id =  
-(
-  SELECT id FROM media WHERE media_type_id =
-    (SELECT id FROM media_types WHERE name = 'Image')
-    ORDER BY rand() LIMIT 1
-); 
-
--- Дополнительно
--- Удаляем поля, которые перенесли в contacts
-ALTER TABLE users DROP email, DROP phone;
-
--- Анализируем данные
-SELECT * FROM media LIMIT 10;
-DESC media;
-
--- Увеличим размер файлов там, где он слишком мал
-UPDATE media SET SIZE = floor(SIZE + RAND() * 10000000) WHERE SIZE <10000;
-
--- Сервис filldb заменил тип поля metadata с json на longtext
-DESC media;
-
--- Возвращаем столбцу метаданных правильный тип
-ALTER TABLE media MODIFY COLUMN metadata JSON;
-
--- Заполним поле metadata значениями из полей filename, size, user_id и media_type_id
--- с использованием функции JSON_OBJECT
-UPDATE media SET metadata = 
-JSON_OBJECT ('filename', filename, 'size', size, 'user_id', user_id, 'media_type_id', media_type_id);
-
--- Доп. вопрос: как перейти со строк на справочники?
-SELECT * FROM gender;
-SELECT * FROM profiles;
-
--- ALTER TABLE profiles
--- ADD gender char(1) COMMENT "пол" AFTER gender_id;
-
--- UPDATE profiles SET gender = if(rand() > 0.5, 'M', 'F'); 
--- UPDATE profiles SET gender_id  = 0; 
-
-UPDATE profiles p SET p.gender_id  =
-  (SELECT g.id FROM gender g WHERE g.gender = p.gender); 
-
--- ALTER TABLE profiles DROP COLUMN gender;
-
--- Практическое задание по теме “CRUD - операции”
--- 1. Повторить все действия по доработке БД ВК: структура таблиц и данные
--- 2. Подобрать сервис который будет служить основой для вашей курсовой работы.
--- 3. (по желанию) Предложить свою реализацию лайков и постов.
+-- РџСЂР°РєС‚РёС‡РµСЃРєРѕРµ Р·Р°РґР°РЅРёРµ РїРѕ С‚РµРјРµ вЂњCRUD - РѕРїРµСЂР°С†РёРёвЂќ
+-- 1. РџРѕРІС‚РѕСЂРёС‚СЊ РІСЃРµ РґРµР№СЃС‚РІРёСЏ РїРѕ РґРѕСЂР°Р±РѕС‚РєРµ Р‘Р” Р’Рљ: СЃС‚СЂСѓРєС‚СѓСЂР° С‚Р°Р±Р»РёС† Рё РґР°РЅРЅС‹Рµ
+-- 2. РџРѕРґРѕР±СЂР°С‚СЊ СЃРµСЂРІРёСЃ РєРѕС‚РѕСЂС‹Р№ Р±СѓРґРµС‚ СЃР»СѓР¶РёС‚СЊ РѕСЃРЅРѕРІРѕР№ РґР»СЏ РІР°С€РµР№ РєСѓСЂСЃРѕРІРѕР№ СЂР°Р±РѕС‚С‹.
+-- 3. (РїРѕ Р¶РµР»Р°РЅРёСЋ) РџСЂРµРґР»РѕР¶РёС‚СЊ СЃРІРѕСЋ СЂРµР°Р»РёР·Р°С†РёСЋ Р»Р°Р№РєРѕРІ Рё РїРѕСЃС‚РѕРІ.
  
  
 DROP DATABASE vk;
@@ -358,15 +34,416 @@ CREATE TABLE `posts` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `users` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT 'Идентификатор строки',
-  `email` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT 'Почта',
-  `phone` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT 'Телефон',
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT 'Время создания строки',
-  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Время обновления строки',
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT 'РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂРѕРєРё',
+  `email` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT 'РџРѕС‡С‚Р°',
+  `phone` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT 'РўРµР»РµС„РѕРЅ',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT 'Р’СЂРµРјСЏ СЃРѕР·РґР°РЅРёСЏ СЃС‚СЂРѕРєРё',
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Р’СЂРµРјСЏ РѕР±РЅРѕРІР»РµРЅРёСЏ СЃС‚СЂРѕРєРё',
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `phone` (`phone`)
-) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Пользователи';
+) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='РџРѕР»СЊР·РѕРІР°С‚РµР»Рё';
+/*!40101 SET character_set_client = @saved_cs_client */;
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+В© 2021 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
+Help
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
+
+
+
+
+
+
+
+
+
+
+
+
+-- РЈСЂРѕРє 4
+-- CRUD РѕРїРµСЂР°С†РёРё
+
+-- Р Р°Р±РѕС‚Р° СЃ Р‘Р” vk
+-- Р—Р°РіСЂСѓР¶Р°РµРј РґР°РјРї РєРѕРЅСЃРѕР»СЊРЅС‹Рј РєР»РёРµРЅС‚РѕРј
+DROP DATABASE vk;
+CREATE DATABASE vk;
+USE vk;
+
+SELECT * FROM users;
+
+
+-- РџРµСЂРµС…РѕРґРёРј РІ РїР°РїРєСѓ СЃ РґР°РјРїРѕРј (/home/user)
+-- mysql -u root -p vk < vk.dump.sql
+-- mysql vk < vk.dump.sql
+
+-- Р—Р°РіСЂСѓР¶Р°РµРј С‡РµСЂРµР· РІС‹РїРѕР»РЅРµРЅРёРµ СЃРєСЂРёРїС‚Р° РІ DBeaver
+
+-- ************** Р”РѕСЂР°Р±Р°С‚С‹РІР°РµРј Р‘Р”
+/*
+Р’Р°СЂРёР°РЅС‚ 1
+telephone Рё email РІС‹РґРµР»РµРЅС‹ РІ РѕС‚РґРµР»СЊРЅС‹Рµ С‚Р°Р±Р»РёС‡РєРё СЃРѕ СЃРІСЏР·СЊСЋ СЃ users РїСЂРё РїРѕРјРѕС‰Рё foreign key.
+Рў.Рє. Р°РґСЂРµСЃРѕРІ РїРѕС‡С‚С‹ Рё С‚РµР»РµС„РѕРЅРѕРІ РјРѕР¶РµС‚ Р±С‹С‚СЊ Р±РѕР»СЊС€Рµ РѕРґРЅРѕРіРѕ.
+
+РџРѕ-С…РѕСЂРѕС€РµРјСѓ РІСЃРµ Р»РёС‡РЅС‹Рµ РґР°РЅРЅС‹Рµ СЋР·РµСЂР° РЅРµРїР»РѕС…Рѕ Р±С‹Р»Рѕ Р±С‹ РІС‹РґРµР»РёС‚СЊ РІ СЂР°Р·РЅС‹Рµ С‚Р°Р±Р»РёС†С‹, С‡С‚РѕР±С‹ users СЃРѕРґРµСЂР¶Р°Р»Р° С‚РѕР»СЊРєРѕ id,
+updated/created Рё СЃС‚Р°С‚СѓСЃ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ Рё (С…РѕС‚СЏ Рё РЅРµР¶РµР»Р°С‚РµР»СЊРЅРѕ) Р»РѕРіРёРЅ.
+
+Р’ С‚Р°Р±Р»РёС†Рµ Profile, gender СЃРґРµР»Р°РЅ boolean РґР»СЏ СЌРєРѕРЅРѕРјРёРё РјРµСЃС‚Р° Рё РґРѕР±Р°РІРёР» foreign key РґР»СЏ СЃСЃС‹Р»РєРё РЅР° users.
+
+РќРµРјРЅРѕРіРѕ РїРѕ С‚Р°Р±Р»РёС†Р°Рј СЂР°СЃРєРёРґР°Р» FOREIGN KEYS РґР»СЏ Р»СѓС‡С€РµР№ СЃРІСЏР·РЅРѕСЃС‚Рё. РќРµ РґРѕР±Р°РІР»СЏР», РЅРѕ РЅР°РґРѕ Р±С‹ - UUID РІ РєР°С‡РµСЃС‚РІРµ id РґР»СЏ РІСЃРµС… С‚Р°Р±Р»РёС†.
+
+Р’Р°СЂРёР°РЅС‚ 2
+РР· РґРѕСЂР°Р±РѕС‚РѕРє - РїРѕР»СЏ СЃ РёРјРµРЅРµРј Рё С„Р°РјРёР»РёРµР№ РїРµСЂРµРЅРµСЃР»Р° РІ profiles.
+Р›РѕРіРёРєР° СЃР»РµРґСѓСЋС‰Р°СЏ: users - С‚Р°Р±Р»РёС†Р°, РёСЃРїРѕР»СЊР·СѓРµРјР°СЏ РґР»СЏ РёРґРµРЅС‚РёС„РёРєР°С†РёРё РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ,
+РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ СЃР°Рј РµРµ РјРµРЅСЏС‚СЊ Р±СѓРґРµС‚ СЂРµР¶Рµ, С‡РµРј РґР°РЅРЅС‹Рµ РІ profiles.
+
+РџР»СЋСЃ РЅР° РёР·РјРµРЅРµРЅРёСЏ С‚РµР»РµС„РѕРЅРѕРІ Рё email'РѕРІ РѕС‚РґРµР»СЊРЅРѕ Р·Р°РїСЂР°С€РёРІР°РµС‚СЃСЏ РїРѕРґС‚РІРµСЂР¶РґРµРЅРёРµ,
+РёР·РјРµРЅРµРЅРёРµ СЌС‚РѕР№ РёРЅС„РѕСЂРјР°С†РёРё Рё РґР°С‚Р° РѕРЅРѕРіРѕ - РѕС‡РµРЅСЊ РІР°Р¶РЅР°. (?)
+
+Р’Р°СЂРёР°РЅС‚ 3
+1. РџРѕР»Рµ РїРѕР» РјРѕР¶РЅРѕ РІС‹РЅРµСЃС‚Рё РІ РѕС‚РґРµР»СЊРЅС‹Р№ СЃРїСЂР°РІРѕС‡РЅРёРє РґР»СЏ С‚РѕРіРѕ,
+С‡С‚РѕР±С‹ РІРѕР·РјРѕР¶РЅС‹Рµ РІР°СЂРёР°РЅС‚С‹ Р±С‹Р»Рё Р·Р°РґР°РЅС‹ РЅРµ РїСЂРѕРіСЂР°РјРјРЅРѕ, Р° РІС‹Р±РёСЂР°Р»РёСЃСЊ РёР· Р‘Р”.
+РџРѕ 1 СЃРёРјРІРѕР»Сѓ РЅРµ РІСЃРµРіРґР° РјРѕР¶РЅРѕ РїРѕРЅСЏС‚СЊ С‡С‚Рѕ Р·Р° РїРѕР» РїРѕРґСЂР°Р·СѓРјРµРІР°РµС‚СЃСЏ https://subscribe.ru/group/razumno-o-svoem-i-nabolevshem/6678982/
+Р­С‚Рѕ С‚Р°РєР¶Рµ Р±СѓРґРµС‚ СѓРґРѕР±РЅРµР№ РґР»СЏ РїРѕСЃС‚СЂРѕРµРЅРёСЏ Р·Р°РїСЂРѕСЃРѕРІ, С‚.Рє., РµСЃР»Рё РЅРµС‚ РґРѕСЃС‚СѓРїР° Рє РїСЂРѕРіСЂР°РјРјРЅРѕР№ РѕР±РѕР»РѕР»РѕС‡РєРµ,
+С‚Рѕ РґР»СЏ РїРѕРЅРёРјР°РЅРёСЏ РІРѕР·РјРѕР¶РЅС‹С… РІР°СЂРёР°РЅС‚РѕРІ РїРѕР»Р° РЅРµ Р±СѓРґРµС‚ РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚Рё РїРµСЂРµР±РёСЂР°С‚СЊ РІСЃСЋ Р±Р°Р·Сѓ
+Рё РІС‹Р±РёСЂР°С‚СЊ СѓРЅРёРєР°Р»СЊРЅС‹Рµ Р·РЅР°С‡РµРЅРёСЏ РїРѕ РґР°РЅРЅРѕРјСѓ РїРѕР»СЋ. 
+
+2. РњРѕР¶РЅРѕ РёР·Р±Р°РІРёС‚СЊСЃСЏ РѕС‚ РІРѕР·РјРѕР¶РЅРѕР№ РёР·Р±С‹С‚РѕС‡РЅРѕСЃС‚Рё РІ С‚Р°Р±Р»РёС†Рµ frienship,
+РєРѕРіРґР° Рё РїРµСЂРІС‹Р№ Рё РІС‚РѕСЂРѕР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РѕС‚РїСЂР°СЏРІСЏС‚ Р·Р°РїСЂРѕСЃ РЅР° РґСЂСѓР¶Р±Сѓ РґСЂСѓРі РґСЂСѓРіСѓ. UNIQUE (friend_id, user_id) (?)
+*/
+
+/*
+РР· РІР°СЂРёР°РЅС‚Р° 1
+РљРѕРЅС‚Р°РєС‚РЅСѓСЋ РёРЅС„РѕСЂРјР°С†РёСЋ РІС‹РЅРµСЃС‚Рё РІ РѕС‚РґРµР»СЊРЅСѓСЋ С‚Р°Р±Р»РёС†Сѓ (email, С‚РµР»РµС„РѕРЅ Рё С‚.Рґ.)
+*/
+
+CREATE TABLE contacts (
+  id int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃСЂРѕРєРё',
+  user_id int(10) UNSIGNED NOT NULL COMMENT 'РЎСЃС‹Р»РєР° РЅР° РїСЂРѕС„РёР»СЊ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ',
+  contact_type varchar(30) COMMENT 'РўРёРї РєРѕРЅС‚Р°РєС‚Р°',
+  contact_info varchar(1000) COMMENT 'РєРѕРЅС‚Р°РєС‚РЅР°СЏ РёРЅС„РѕСЂРјР°С†РёСЏ',
+  created_at datetime DEFAULT current_timestamp() COMMENT 'Р’СЂРµРјСЏ СЃРѕР·РґР°РЅРёСЏ СЃС‚СЂРѕРєРё',
+  updated_at datetime DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Р’СЂРµРјСЏ РѕР±РЅРѕРІР»РµРЅРёСЏ СЃС‚СЂРѕРєРё',
+  PRIMARY KEY (id)
+) COMMENT='РљРѕРЅС‚Р°РєС‚РЅР°СЏ РёРЅС„РѕСЂРјР°С†РёСЏ';
+
+/*
+РР· РІР°СЂРёР°РЅС‚Р° 2
+Р’С‹РЅРµСЃС‚Рё РёРјСЏ Рё С„Р°РјРёР»РёСЋ РІ profiles
+*/
+
+ALTER TABLE profiles
+  ADD first_name varchar(100) NOT NULL COMMENT 'РРјСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ' AFTER country,
+  ADD last_name varchar(100)  NOT NULL COMMENT 'Р¤Р°РјРёР»РёСЏ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ' AFTER first_name
+;
+
+/*
+РР· РІР°СЂРёР°РЅС‚Р° 3
+РЎРїСЂР°РІРѕС‡РЅРёРє РґР»СЏ РїРѕР»РѕРІ
+*/
+
+CREATE TABLE gender (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂРѕРєРё", 
+  gender VARCHAR(25) COMMENT "РќР°Р·РІР°РЅРёРµ РїРѕР»Р°",
+  gender_info VARCHAR(150) COMMENT "РРЅС„РѕСЂРјР°С†РёСЏ Рѕ РїРѕР»Рµ",
+  active BOOLEAN COMMENT "РђРєС‚РёРІРµРЅ/РќРµР°РєС‚РёРІРµРЅ. Р”РѕСЃС‚СѓРїРЅРѕСЃС‚СЊ РґР»СЏ РІС‹Р±РѕСЂР°",
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT "Р’СЂРµРјСЏ СЃРѕР·РґР°РЅРёСЏ СЃС‚СЂРѕРєРё",  
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT "Р’СЂРµРјСЏ РѕР±РЅРѕРІР»РµРЅРёСЏ СЃС‚СЂРѕРєРё"
+) COMMENT "Р’Р°СЂРёР°РЅС‚С‹ РїРѕР»РѕРІ";
+
+ALTER TABLE profiles
+ADD gender_id INT NOT NULL COMMENT "РЎСЃС‹Р»РєР° РЅР° РїРѕР»" AFTER gender;
+
+DESC profiles;
+SELECT * FROM profiles;
+
+/*  
+Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕ: РґРѕР±Р°РІРёС‚СЊ СЃРїСЂР°РІРѕС‡РЅРёРє СЃС‚Р°С‚СѓСЃРѕРІ
+*/
+CREATE TABLE user_statuses (
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT "РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂРѕРєРё", 
+  name VARCHAR(100) NOT NULL COMMENT "РќР°Р·РІР°РЅРёРµ СЃС‚Р°С‚СѓСЃР° (СѓРЅРёРєР°Р»СЊРЅРѕ)",
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT "Р’СЂРµРјСЏ СЃРѕР·РґР°РЅРёСЏ СЃС‚СЂРѕРєРё",  
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT "Р’СЂРµРјСЏ РѕР±РЅРѕРІР»РµРЅРёСЏ СЃС‚СЂРѕРєРё"
+) COMMENT "РЎРїСЂР°РІРѕС‡РЅРёРє СЃС‚СЂР°РЅ";  
+
+UPDATE profiles SET status = null;
+
+SELECT * FROM user_statuses;
+
+INSERT INTO user_statuses (name) VALUES
+ ('single'),
+ ('married');
+
+ALTER TABLE profiles RENAME COLUMN status TO user_status_id; 
+ALTER TABLE profiles MODIFY COLUMN user_status_id INT UNSIGNED; 
+DESCRIBE profiles;
+SELECT * FROM profiles;
+
+
+-- ************** Р”РѕСЂР°Р±Р°С‚С‹РІР°РµРј С‚РµСЃС‚РѕРІС‹Рµ РґР°РЅРЅС‹Рµ
+-- РђРЅР°Р»РёР·РёСЂСѓРµРј РґР°РЅРЅС‹Рµ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№
+SELECT * FROM users LIMIT 10;
+-- РЎРјРѕС‚СЂРёРј СЃС‚СЂСѓРєС‚СѓСЂСѓ С‚Р°Р±Р»РёС†С‹ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№
+DESC users;
+
+-- Р”Р°С‚Р° РѕР±РЅРѕРІР»РµРЅРёСЏ РЅРµ РґРѕР»Р¶РЅР° Р±С‹С‚СЊ СЂР°РЅСЊС€Рµ РґР°С‚С‹ СЃРѕР·РґР°РЅРёСЏ  
+UPDATE users SET updated_at = CURRENT_TIMESTAMP()
+WHERE updated_at < created_at;
+
+-- РђРЅР°Р»РёР·РёСЂСѓРµРј РґР°РЅРЅС‹Рµ
+SELECT * FROM gender LIMIT 10;
+DESC gender;
+
+-- Р—Р°РїРѕР»РЅСЏРµРј СЃРїСЂР°РІРѕС‡РЅРёРє РїРѕР»РѕРІ (РїСЂРё РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚Рё)
+INSERT INTO gender (gender, gender_info) VALUES
+ ('M', 'РњСѓР¶СЃРєРѕР№'),
+ ('F', 'Р–РµРЅСЃРєРёР№');
+
+-- РђРЅР°Р»РёР·РёСЂСѓРµРј РґР°РЅРЅС‹Рµ
+SELECT * FROM user_statuses LIMIT 10;
+DESC user_statuses;
+
+-- Р—Р°РїРѕР»РЅСЏРµРј СЃРїСЂР°РІРѕС‡РЅРёРє СЃС‚Р°С‚СѓСЃРѕРІ (РїСЂРё РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚Рё)
+INSERT INTO user_statuses (name) VALUES
+ ('Single'),
+ ('Married');
+
+-- РђРЅР°Р»РёР·РёСЂСѓРµРј РґР°РЅРЅС‹Рµ
+SELECT * FROM profiles LIMIT 10;
+DESC profiles;
+
+-- Р—Р°РїРѕР»РЅСЏРµРј Р·РЅР°С‡РµРЅРёСЏ РїРѕР»РѕРІ РІ profiles
+-- SELECT id FROM gender ORDER BY rand() LIMIT 1;
+UPDATE profiles SET gender_id = (SELECT id FROM gender ORDER BY rand() LIMIT 1); 
+-- SELECT floor(1 + RAND() * 2);
+
+-- РџСЂРѕРІРµСЂСЏРµРј id РІ user_statuses Рё Р·Р°РїРѕР»РЅСЏРµРј РёРјРё СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РµРµ РїРѕР»Рµ profiles
+-- select * from user_statuses 
+UPDATE profiles SET user_status_id = floor(1 + RAND() * 2); 
+
+-- РџРµСЂРµРЅРѕСЃРёРј Р·РЅР°С‡РµРЅРёСЏ first_name Рё last_name РёР· users РІ profiles
+UPDATE profiles p SET p.first_name = 
+(SELECT u.first_name FROM users u WHERE u.id = p.user_id); 
+UPDATE profiles p SET p.last_name = 
+(SELECT u.last_name FROM users u WHERE u.id = p.user_id); 
+
+-- СѓРґР°Р»СЏРµРј СЃС‚РѕР»Р±С†С‹, РєРѕС‚РѕСЂС‹Рµ РїРµСЂРµРЅРµСЃР»Рё РІ РґСЂСѓРіРµ С‚Р°Р±Р»РёС†С‹
+ALTER TABLE profiles DROP COLUMN gender;
+ALTER TABLE users DROP COLUMN first_name, DROP COLUMN last_name;
+
+-- РђРЅР°Р»РёР·РёСЂСѓРµРј РґР°РЅРЅС‹Рµ
+SELECT * FROM contacts LIMIT 10;
+DESC contacts;
+
+-- РџРµСЂРµРЅРѕСЃРёРј email Рё phone РєР°Р¶РґРѕРіРѕ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РёР· users РІ contacts
+INSERT INTO contacts (user_id, contact_type, contact_info)
+SELECT id, 'email', email FROM users
+UNION ALL
+SELECT id, 'phone', phone FROM users;
+
+-- РђРЅР°Р»РёР·РёСЂСѓРµРј РґР°РЅРЅС‹Рµ
+
+SELECT * FROM messages LIMIT 10;
+DESC messages;
+
+-- Р­РјСѓР»РёСЂСѓРµРј СЃРёС‚СѓР°С†РёСЋ, РєРѕРіРґР° РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ РїРёС€РµС‚ СЃР°Рј СЃРµР±Рµ, С‡С‚РѕР±С‹ РґР°Р»РµРµ РµС‘ РёСЃРїСЂР°РІРёС‚СЊ
+-- UPDATE messages SET from_user_id = id, to_user_id = id;
+
+-- Р·Р°РїРѕР»РЅСЏРµРј СЃР»СѓС‡Р°Р№РЅС‹РјРё Р·РЅР°С‡РµРЅРёСЏРјРё, РѕС‚ РєРѕРіРѕ Рё РєРѕРјСѓ СЃРѕРѕР±С‰РµРЅРёРµ
+UPDATE messages SET
+  from_user_id = floor(1 + RAND() * 100),
+  to_user_id = floor(1 + RAND() * 100)
+;
+
+-- РђРЅР°Р»РёР·РёСЂСѓРµРј РґР°РЅРЅС‹Рµ
+SELECT * FROM media_types LIMIT 10;
+DESC media_types;
+
+-- Р—Р°РїРѕР»РЅСЏРµРј СЃРїСЂР°РІРѕС‡РЅРёРє С‚РёРїРѕРІ РјРµРґРёР° (РїСЂРё РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚Рё)
+INSERT INTO media_types (name) VALUES
+ ('Video'),
+ ('Audio'),
+ ('Image');
+
+-- РђРЅР°Р»РёР·РёСЂСѓРµРј РґР°РЅРЅС‹Рµ
+SELECT * FROM media LIMIT 10;
+DESC media;
+
+-- Р—Р°РїРѕР»РЅСЏРµРј media СЃ id С‚РёРїР°Р° РѕС‚ 1 РґРѕ 3 
+UPDATE media SET
+  media_type_id = floor(1 + RAND() * 3);
+
+ -- РђРЅР°Р»РёР·РёСЂСѓРµРј РґР°РЅРЅС‹Рµ
+SELECT * FROM friendship_statuses LIMIT 10;
+DESC friendship_statuses;
+
+-- РћС‡РёС‰Р°РµРј С‚Р°Р±Р»РёС†Сѓ friendship_statuses (РїСЂРё РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚Рё)
+-- РџСЂРё TRUNCATE РЅСѓРјРµСЂР°С†РёСЏ РЅРѕРІС‹С… СЃС‚СЂРѕРє СЃРЅРѕРІР° Р±СѓРґРµС‚ РЅР°С‡РёРЅР°С‚СЊСЃСЏ СЃ 1
+TRUNCATE friendship_statuses;
+
+-- Р—Р°РїРѕР»РЅСЏРµРј СЃРїСЂР°РІРѕС‡РЅРёРє СЃС‚Р°С‚СѓСЃРѕРІ РґСЂСѓР¶Р±С‹ (РїСЂРё РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚Рё)
+INSERT INTO friendship_statuses (name)
+VALUES ('Requested'), ('Approved'), ('Declined');
+
+-- РђРЅР°Р»РёР·РёСЂСѓРµРј РґР°РЅРЅС‹Рµ
+SELECT * FROM friendship LIMIT 10;
+DESC friendship;
+
+-- РћР±РЅРѕРІР»СЏРµРј С‚Р°Р±Р»РёС†Сѓ РґСЂСѓР¶Р±С‹. Р’Р°СЂРёР°РЅС‚ 1
+UPDATE friendship SET
+  user_id   = floor(1 + RAND() * 100), 
+  friend_id = floor(1 + RAND() * 100),
+  status_id = floor(1 + RAND() * 3) 
+;
+
+-- РћР±РЅРѕРІР»СЏРµРј С‚Р°Р±Р»РёС†Сѓ РґСЂСѓР¶Р±С‹. Р’Р°СЂРёР°РЅС‚ 2
+-- РќРµСЃРјРѕС‚СЂСЏ РЅР° С‚Рѕ, С‡С‚Рѕ РґР°РЅРЅС‹Р№ РІР°СЂРёР°РЅС‚ РґР»РёРЅРЅРµРµ/СЃР»РѕР¶РЅРµРµ, Р¶РµР»Р°С‚РµР»СЊРЅРѕ РїСЂРё Р·Р°РїРѕР»РЅРµРЅРёРё С‚Р°Р±Р»РёС† С‚РµСЃС‚РѕРІС‹РјРё РґР°РЅРЅС‹РјРё
+-- РІРµР·РґРµ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ С‚Р°РєРѕР№ РїРѕРґС…РѕРґ, С‚.Рє. РІ РґР°РЅРЅРѕРј СЃР»СѓС‡Р°Рµ РЅРµС‚ РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚Рё,
+-- С‡С‚РѕР±С‹ id РІ СЃРїСЂР°РІРѕС‡РЅРёРєР°С… Рё СЃРІСЏР·Р°РЅРЅС‹С… С‚Р°Р±Р»РёС†Р°С… РЅР°С‡РёРЅР°Р»РёСЃСЊ СЃ 1 Рё С€Р»Рё РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕ
+-- Р’СЃРµРіРґР° Р±СѓРґСѓС‚ РїРѕРґСЃС‚Р°РІР»СЏС‚СЊСЃСЏ С‚РѕР»СЊРєРѕ С‚Рµ Р·РЅР°С‡РµРЅРёСЏ, РєРѕС‚РѕСЂС‹Рµ РµСЃС‚СЊ РІ СЃРІСЏР·Р°РЅРЅС‹С… С‚Р°Р±Р»РёС†Р°С… 
+UPDATE friendship SET
+  user_id   = (SELECT id FROM users ORDER BY rand() LIMIT 1), 
+  friend_id = (SELECT id FROM users ORDER BY rand() LIMIT 1),
+  status_id = (SELECT id FROM friendship_statuses ORDER BY rand() LIMIT 1) 
+;
+
+-- РђРЅР°Р»РёР·РёСЂСѓРµРј РґР°РЅРЅС‹Рµ
+SELECT * FROM communities LIMIT 10;
+DESC communities;
+-- РЈРґР°Р»СЏРµРј 
+DELETE FROM communities;
+-- РЎРѕР·РґР°РµРј РЅРµСЃРєРѕР»СЊРєРѕ (РїСЂРё РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚Рё)
+INSERT INTO communities (name) values ('РџРѕРїСѓР»СЏСЂРЅР°СЏ РјСѓР·С‹РєР°');
+INSERT INTO communities (name) values ('Р­РєСЃРєСѓСЂСЃРёРё');
+INSERT INTO communities (name) values ('РЁРєРѕР»Р° С‚Р°РЅС†РµРІ');
+-- РћР±СЂР°С‚РёРј РІРЅРёРјР°РЅРёРµ, С‡С‚Рѕ РїСЂРё РІС‹РїРѕР»РЅРµРЅРёРё DELETE Рё РїРѕСЃР»РµРґСѓСЋС‰РµР№ РІСЃС‚Р°РІРєРµ id РїРµСЂРІРѕР№ Р·Р°РїРёСЃРё РЅР°С‡РёРЅР°РµС‚СЃСЏ РЅРµ СЃ 1 
+SELECT * FROM communities LIMIT 10;
+
+-- РђРЅР°Р»РёР·РёСЂСѓРµРј РґР°РЅРЅС‹Рµ
+SELECT * FROM communities_users LIMIT 10;
+DESC communities_users;
+
+-- РћС‡РёС‰Р°РµРј С‚Р°Р±Р»РёС†Сѓ РїРѕР»СЊР·РѕРІР°С‚РµР»РµР№ СЃРѕРѕР±С‰РµСЃС‚РІ(РіСЂСѓРїРї) (РїСЂРё РЅРµРѕР±С…РѕРґРёРјРѕСЃС‚Рё)
+DELETE FROM communities_users;
+
+-- РќРµСЃРєРѕР»СЊРєРѕ СЂР°Р· РІС‹РїРѕР»РЅРёРј Р·Р°РїСЂРѕСЃ, РєР°Р¶РґРѕРµ РІС‹РїРѕР»РЅРµРЅРёРµ РєРѕС‚РѕСЂРѕРіРѕ
+-- Р±СѓРґРµС‚ РґРѕР±Р°РІР»СЏС‚СЊ РїРѕ 1 СЃР»СѓС‡Р°Р№РЅРѕРјСѓ РїРѕР»СЊР·РѕРІР°С‚РµР»СЋ РІ РєР°Р¶РґСѓСЋ РіСЂСѓРїРїСѓ 
+-- Р’ РЅРµРєРѕС‚РѕСЂС‹С… СЃР»СѓС‡Р°СЏС… РјРѕР¶РµС‚ РІС‹РґР°РІР°С‚СЊСЃСЏ РѕС€РёР±РєР°, РѕР·РЅР°С‡Р°СЋС‰Р°СЏ, С‡С‚Рѕ СЃР»СѓС‡Р°Р№РЅРѕРј РІ РЅР°Р±РѕСЂРµ
+-- РІСЃС‚Р°РІР»СЏРµРјС‹С… РґР°РЅРЅС‹С… РІ РіСЂСѓРїРїРµ СѓР¶Рµ РµСЃС‚СЊ СЌС‚РѕС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊ
+-- Duplicate entry '..-..' for key 'communities_users.PRIMARY'
+-- Р”Р°РЅРЅСѓСЋ РѕС€РёР±РєСѓ РјРѕР¶РЅРѕ РїСЂРѕРїСѓСЃС‚РёС‚СЊ
+INSERT INTO communities_users (community_id, user_id)
+SELECT id, (SELECT id FROM users ORDER BY rand() LIMIT 1)
+ FROM communities;
+
+-- РђРЅР°Р»РёР·РёСЂСѓРµРј РґР°РЅРЅС‹Рµ
+SELECT * FROM profiles;
+
+-- Р—Р°РїРѕР»РЅРёРј photo_id СЃСЃС‹Р»РєР°РјРё РЅР° СЃР»СѓС‡Р°Р№РЅС‹Рµ media РёР· РЅР°Р±РѕСЂР°, СЃРѕРґРµСЂР¶Р°С‰РµРіРѕ С‚РѕР»СЊРєРѕ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ
+UPDATE profiles SET photo_id =  
+(
+  SELECT id FROM media WHERE media_type_id =
+    (SELECT id FROM media_types WHERE name = 'Image')
+    ORDER BY rand() LIMIT 1
+); 
+
+-- Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕ
+-- РЈРґР°Р»СЏРµРј РїРѕР»СЏ, РєРѕС‚РѕСЂС‹Рµ РїРµСЂРµРЅРµСЃР»Рё РІ contacts
+ALTER TABLE users DROP email, DROP phone;
+
+-- РђРЅР°Р»РёР·РёСЂСѓРµРј РґР°РЅРЅС‹Рµ
+SELECT * FROM media LIMIT 10;
+DESC media;
+
+-- РЈРІРµР»РёС‡РёРј СЂР°Р·РјРµСЂ С„Р°Р№Р»РѕРІ С‚Р°Рј, РіРґРµ РѕРЅ СЃР»РёС€РєРѕРј РјР°Р»
+UPDATE media SET SIZE = floor(SIZE + RAND() * 10000000) WHERE SIZE <10000;
+
+-- РЎРµСЂРІРёСЃ filldb Р·Р°РјРµРЅРёР» С‚РёРї РїРѕР»СЏ metadata СЃ json РЅР° longtext
+DESC media;
+
+-- Р’РѕР·РІСЂР°С‰Р°РµРј СЃС‚РѕР»Р±С†Сѓ РјРµС‚Р°РґР°РЅРЅС‹С… РїСЂР°РІРёР»СЊРЅС‹Р№ С‚РёРї
+ALTER TABLE media MODIFY COLUMN metadata JSON;
+
+-- Р—Р°РїРѕР»РЅРёРј РїРѕР»Рµ metadata Р·РЅР°С‡РµРЅРёСЏРјРё РёР· РїРѕР»РµР№ filename, size, user_id Рё media_type_id
+-- СЃ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµРј С„СѓРЅРєС†РёРё JSON_OBJECT
+UPDATE media SET metadata = 
+JSON_OBJECT ('filename', filename, 'size', size, 'user_id', user_id, 'media_type_id', media_type_id);
+
+-- Р”РѕРї. РІРѕРїСЂРѕСЃ: РєР°Рє РїРµСЂРµР№С‚Рё СЃРѕ СЃС‚СЂРѕРє РЅР° СЃРїСЂР°РІРѕС‡РЅРёРєРё?
+SELECT * FROM gender;
+SELECT * FROM profiles;
+
+-- ALTER TABLE profiles
+-- ADD gender char(1) COMMENT "РїРѕР»" AFTER gender_id;
+
+-- UPDATE profiles SET gender = if(rand() > 0.5, 'M', 'F'); 
+-- UPDATE profiles SET gender_id  = 0; 
+
+UPDATE profiles p SET p.gender_id  =
+  (SELECT g.id FROM gender g WHERE g.gender = p.gender); 
+
+-- ALTER TABLE profiles DROP COLUMN gender;
+
+-- РџСЂР°РєС‚РёС‡РµСЃРєРѕРµ Р·Р°РґР°РЅРёРµ РїРѕ С‚РµРјРµ вЂњCRUD - РѕРїРµСЂР°С†РёРёвЂќ
+-- 1. РџРѕРІС‚РѕСЂРёС‚СЊ РІСЃРµ РґРµР№СЃС‚РІРёСЏ РїРѕ РґРѕСЂР°Р±РѕС‚РєРµ Р‘Р” Р’Рљ: СЃС‚СЂСѓРєС‚СѓСЂР° С‚Р°Р±Р»РёС† Рё РґР°РЅРЅС‹Рµ
+-- 2. РџРѕРґРѕР±СЂР°С‚СЊ СЃРµСЂРІРёСЃ РєРѕС‚РѕСЂС‹Р№ Р±СѓРґРµС‚ СЃР»СѓР¶РёС‚СЊ РѕСЃРЅРѕРІРѕР№ РґР»СЏ РІР°С€РµР№ РєСѓСЂСЃРѕРІРѕР№ СЂР°Р±РѕС‚С‹.
+-- 3. (РїРѕ Р¶РµР»Р°РЅРёСЋ) РџСЂРµРґР»РѕР¶РёС‚СЊ СЃРІРѕСЋ СЂРµР°Р»РёР·Р°С†РёСЋ Р»Р°Р№РєРѕРІ Рё РїРѕСЃС‚РѕРІ.
+ 
+ 
+DROP DATABASE vk;
+CREATE DATABASE vk;
+USE vk;
+
+
+CREATE TABLE `likes` (
+	`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`post_id` INT UNSIGNED DEFAULT NULL COMMENT 'post id from posts',
+	`user_like_id` INT UNSIGNED DEFAULT NULL COMMENT 'user id from users',
+	`like_date` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT 'date of like creation',
+	PRIMARY KEY (`id`),
+	KEY `fk_post_like_id` (`post_id`),
+	KEY `fk_user_post_id` (`user_like_id`),
+	CONSTRAINT `fk_post_like_id` FOREIGN KEY (`post_id`) REFERENCES `posts`(`id`),
+	CONSTRAINT `fk_user_like_id` FOREIGN KEY (`user_like_id`) REFERENCES `users`(`id`));
+
+CREATE TABLE `posts` (
+	`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`user_id` INT UNSIGNED DEFAULT NULL COMMENT 'user id from users',
+	`message` VARCHAR(5000) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+	`media` INT DEFAULT NULL COMMENT 'link to media from appropriate table',
+	`deleted` TINYINT(1) DEFAULT '0',
+	PRIMARY KEY (`id`),
+	KEY `fk_user_id` (`user_id`),
+	CONSTRAINT `fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`));
+
+ DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `users` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT 'РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СЃС‚СЂРѕРєРё',
+  `email` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT 'РџРѕС‡С‚Р°',
+  `phone` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL COMMENT 'РўРµР»РµС„РѕРЅ',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP COMMENT 'Р’СЂРµРјСЏ СЃРѕР·РґР°РЅРёСЏ СЃС‚СЂРѕРєРё',
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Р’СЂРµРјСЏ РѕР±РЅРѕРІР»РµРЅРёСЏ СЃС‚СЂРѕРєРё',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email` (`email`),
+  UNIQUE KEY `phone` (`phone`)
+) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='РџРѕР»СЊР·РѕРІР°С‚РµР»Рё';
 /*!40101 SET character_set_client = @saved_cs_client */;
  
  
