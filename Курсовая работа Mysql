@@ -1,3 +1,5 @@
+*-- DROP DATABASE DRIVE2;
+
 CREATE DATABASE DRIVE2;
 
 USE DRIVE2;
@@ -14,6 +16,59 @@ CREATE TABLE `car_brand` (
 INSERT INTO car_brand (Car_id, Car_name) VALUES (1,"Acura");
 INSERT INTO car_brand (Car_id, Car_name) VALUES (2,"Alfa Romeo");
 INSERT INTO car_brand (Car_id, Car_name) VALUES (3,"Audi");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (4,"BMW");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (5,"Cadillac");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (6,"Chery");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (7,"Chevrolet");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (8,"Chrysler");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (9,"Citroen");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (10,"Dodge");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (11,"Ferrari");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (12,"FIAT");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (13,"Ford");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (14,"Geely");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (15,"Honda");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (16,"Hummer");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (17,"Hyundai");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (18,"Infiniti");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (19,"Jaguar");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (20,"Jeep");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (21,"KIA");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (22,"Lamborghini");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (23,"Lancia");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (24,"Land Rover");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (25,"Lexus");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (26,"Maserati");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (27,"Mazda");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (28,"Mercedes-Benz");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (29,"MINI");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (30,"Mitsubishi");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (31,"Nissan");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (32,"Opel");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (33,"Peugeot");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (34,"Pontiac");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (35,"Porsche");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (36,"Renault");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (37,"Saab");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (38,"Scion");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (39,"SEAT");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (40,"Skoda");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (41,"Smart");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (42,"Subaru");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (43,"Suzuki");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (44,"Tesla");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (45,"Toyota");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (46,"Volkswagen");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (47,"Volvo");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (48,"ГАЗ");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (49,"ЗАЗ");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (50,"ЛАДА");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (51,"ЛуАЗ");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (52,"УАЗ");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (53,"ДРУГИЕ");
+INSERT INTO car_brand (Car_id, Car_name) VALUES (54,"САМОДЕЛКИ");
+
+
 
 
 CREATE TABLE `car_model` (
@@ -27,8 +82,8 @@ CREATE TABLE `car_model` (
   CONSTRAINT `car_model_ibfk_1` FOREIGN KEY (`model_id`) REFERENCES `car_brand` (`Car_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=201 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-  
- 
+
+
 INSERT INTO car_model (Car_id,model_id,model_name) VALUES (101,1,'а');
 INSERT INTO car_model (Car_id,model_id,model_name) VALUES (102,1,'CSX');
 INSERT INTO car_model (Car_id,model_id,model_name) VALUES (103,1,'EL');
@@ -579,7 +634,7 @@ INSERT INTO  `communities`  (`id`,`name`,`model_id`,`Car_login_id`) VALUES (1092
 INSERT INTO  `communities`  (`id`,`name`,`model_id`,`Car_login_id`) VALUES (1093,"ГАЗ Волга",3,"Гамадрил");
 INSERT INTO  `communities`  (`id`,`name`,`model_id`,`Car_login_id`) VALUES (1094,"Hyundai Club",3,"Гаммарус");
 INSERT INTO  `communities`  (`id`,`name`,`model_id`,`Car_login_id`) VALUES (1095,"АнтиГАИ",3,"Гаплокантозавр");
-INSERT INTO  `communities`  (`id`,`name`,`model_id`,`Car_login_id`) VALUES (1096,"Позитивов☺зы",3,"Гарпаголест");
+INSERT INTO  `communities`  (`id`,`name`,`model_id`,`Car_login_id`) VALUES (1096,"Позитивов?зы",3,"Гарпаголест");
 INSERT INTO  `communities`  (`id`,`name`,`model_id`,`Car_login_id`) VALUES (1097,"Тормозные Системы",3,"Гаршнеп");
 INSERT INTO  `communities`  (`id`,`name`,`model_id`,`Car_login_id`) VALUES (1098,"Apple Club",3,"Гастония");
 INSERT INTO  `communities`  (`id`,`name`,`model_id`,`Car_login_id`) VALUES (1099,"Mazda Club",3,"Гастрофолис");
@@ -603,16 +658,16 @@ model_name VARCHAR(100) NOT NULL,
     FOREIGN KEY (`model_id`)  REFERENCES car_brand (`Car_id`),
     FOREIGN KEY (`id`)  REFERENCES `users with car` (`id`)
    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
- 
+
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (101,1,"перевозчик",1001,"Dek.spb.",1,"В сети",1,"Acura");
-INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (102,1,"чечетка",1002,"†฿¢е₥¤₴¥₩иЙ†",1,"Не беспокоить",2,"Alfa Romeo");
+INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (102,1,"чечетка",1002,"†??е?¤???иЙ†",1,"Не беспокоить",2,"Alfa Romeo");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (103,1,"малый зуек",1003,"ЦелуЙ эКраН поКа oN-LIne",2,"Ковыряюсь в тачке",3,"Audi");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (104,1,"уссурийский зуек",1004,"~Real Man~",2,"На работе",4,"BMW");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (105,1,"рогатый жаворонок",1005,"ApostaL",1,"Весь в ремонте",5,"Cadillac");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (106,1,"полевой жаворонок",1006,"ТрАвМаТик",1,"Не за рулём=)",2,"Alfa Romeo");
-INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (107,1,"зимородок",1007,"❶Ӎś.₣®ӧśŧ❶",2,"В сети",3,"Audi");
+INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (107,1,"зимородок",1007,"???.?®????",2,"В сети",3,"Audi");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (108,1,"кряква",1008,"Doter",2,"Не беспокоить",4,"BMW");
-INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (109,1,"широконоска",1009,"₪.°ХǺӍΣĿΣӦÑ°.₪",1,"Ковыряюсь в тачке",5,"Cadillac");
+INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (109,1,"широконоска",1009,"?.°Х???????°.?",1,"Ковыряюсь в тачке",5,"Cadillac");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (110,1,"свиязь",1010,"}{РIIIиЙ",1,"На работе",6,"Chery");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (111,1,"чирок-трескунок",1011,"IIpokypop",2,"Весь в ремонте",3,"Audi");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (112,1,"серая утка",1012,">.P.S.I.X.<",2,"Не за рулём=)",4,"BMW");
@@ -621,24 +676,24 @@ INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Pro
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (115,1,"гусь-сухонос",1015,"Tp@KTopu$T®",2,"Ковыряюсь в тачке",7,"Chevrolet");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (116,1,"горный гусь",1016,"VIT",2,"На работе",4,"BMW");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (117,1,"сайга",1017,"California*Soul*",1,"Весь в ремонте",5,"Cadillac");
-INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (118,1,"беркут",1018,"๖ۣۣۜЛყчωиę ∂թყʒья",1,"Не за рулём=)",6,"Chery");
+INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (118,1,"беркут",1018,"????Л?ч?и? ????ья",1,"Не за рулём=)",6,"Chery");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (119,1,"азиатский сурок",1019,"Na==оTMаш==",2,"В сети",7,"Chevrolet");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (120,1,"белая цапля",1020,"LG|IvanM.",2,"Не беспокоить",8,"Chrysler");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (201,2,"домовый сыч",1021,"Rich ",1,"Ковыряюсь в тачке",5,"Cadillac");
-INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (202,2,"красноголовый нырок",1022,"°••Ħēжңыữ ₰Đ●•°",1,"На работе",6,"Chery");
+INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (202,2,"красноголовый нырок",1022,"°••??ж?ы? ???•°",1,"На работе",6,"Chery");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (203,2,"свиристель",1023,"Akril",2,"Весь в ремонте",7,"Chevrolet");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (204,2,"як",1024,"][ХУЛИ-GUN][ ",2,"Не за рулём=)",8,"Chrysler");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (205,2,"красноносый нырок",1025,"ubitiy_v_hlam",1,"В сети",9,"Citroen");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (206,2,"желтоголовая трясогузка",1026,"Водитель_НЛО",1,"Не беспокоить",6,"Chery");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (207,2,"центральноазиатский канюк",1027,"Heaven.MasteR",2,"Ковыряюсь в тачке",7,"Chevrolet");
-INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (208,2,"желтая трясогузка",1028,"★OIITiMicT★",2,"На работе",8,"Chrysler");
+INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (208,2,"желтая трясогузка",1028,"?OIITiMicT?",2,"На работе",8,"Chrysler");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (209,2,"корсак",1029,"-3acTPeJIuCb-",1,"Весь в ремонте",9,"Citroen");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (210,2,"горный козел",1030,"*Rosa*",1,"Не за рулём=)",10,"Dodge");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (211,2,"горный козел",1031,"[Всевжопу]",2,"В сети",7,"Chevrolet");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (212,2,"красная утка",1032,"|•ПАКЕТИК•|",2,"Не беспокоить",8,"Chrysler");
-INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (213,2,"марал",1033,"†ŠẄǺĜ†",1,"Ковыряюсь в тачке",9,"Citroen");
-INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (214,2,"косуля",1034,"٠•☺Rulevoi☺•٠",1,"На работе",10,"Dodge");
-INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (215,2,"бурокрылая ржанка",1035,"†ẶvŦẶŖĩŦĒŦ†",2,"Весь в ремонте",11,"Ferrari");
+INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (213,2,"марал",1033,"†????†",1,"Ковыряюсь в тачке",9,"Citroen");
+INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (214,2,"косуля",1034,"?•?Rulevoi?•?",1,"На работе",10,"Dodge");
+INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (215,2,"бурокрылая ржанка",1035,"†?v???????†",2,"Весь в ремонте",11,"Ferrari");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (216,2,"оляпка",1036,"**No coNnecT...**",2,"Не за рулём=)",8,"Chrysler");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (217,2,"полевой лунь",1037,"Superхрэн",1,"В сети",9,"Citroen");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (218,2,"Водолюб",1038,"Flake*",1,"Не беспокоить",10,"Dodge");
@@ -648,16 +703,16 @@ INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Pro
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (222,2,"Гавиал",1042,"<>",1,"Не за рулём=)",10,"Dodge");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (223,2,"Гагара",1043,"White",2,"В сети",11,"Ferrari");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (224,2,"Гадрозаврид",1044,"Грешник ",2,"Не беспокоить",12,"FIAT");
-INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (225,2,"Гадропитек",1045,"ᵀᴴᴱ ᴼᴿᴵᴳᴵᴻᴬᴸ",1,"Ковыряюсь в тачке",13,"Ford");
+INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (225,2,"Гадропитек",1045,"??? ????????",1,"Ковыряюсь в тачке",13,"Ford");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (226,2,"Газозавр",1046,"Jle`Jle",1,"На работе",10,"Dodge");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (227,2,"Галаго",1047,"Black_Swan ",2,"Весь в ремонте",11,"Ferrari");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (228,2,"Галактицида",1048,"Koks***OIIr",2,"Не за рулём=)",12,"FIAT");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (229,2,"Галикт",1049,"Чё Каво",1,"В сети",13,"Ford");
-INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (230,2,"Галлимим",1050,"▪●♀Кореш♂●▪",1,"Не беспокоить",14,"Geely");
+INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (230,2,"Галлимим",1050,"???Кореш???",1,"Не беспокоить",14,"Geely");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (231,2,"Галобатес",1051,"}{оSSe",2,"Ковыряюсь в тачке",11,"Ferrari");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (232,2,"Гамбела",1052,"Tr0jan",2,"На работе",12,"FIAT");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (233,2,"Гапалодект",1053,"Хлопчик_Киллер",1,"Весь в ремонте",13,"Ford");
-INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (234,2,"Гарибальдия",1054,"°••∏øλữңά●•°",1,"Не за рулём=)",14,"Geely");
+INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (234,2,"Гарибальдия",1054,"°••???????•°",1,"Не за рулём=)",14,"Geely");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (235,2,"Гарпактикоида",1055,"Kenni",2,"В сети",15,"Honda");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (236,2,"Гастерохизма",1056,"ReMx",2,"Не беспокоить",12,"FIAT");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (237,2,"Гасторнис",1057,"jangles",1,"Ковыряюсь в тачке",13,"Ford");
@@ -668,42 +723,42 @@ INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Pro
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (242,2,"Вьюрои",1062,"CoK_CAHEK",1,"Не беспокоить",14,"Geely");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (301,3,"Гага",1063,"4yBa4ek163rus",2,"Ковыряюсь в тачке",15,"Honda");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (302,3,"Гагарка",1064,"Zekenbi`",2,"На работе",16,"Hummer");
-INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (303,3,"Гадрозаврин",1065,"МĚĎßĘЖŐĦŎĶ™",1,"Весь в ремонте",17,"Hyundai");
+INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (303,3,"Гадрозаврин",1065,"М????Ж????™",1,"Весь в ремонте",17,"Hyundai");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (304,3,"Гадюка",1066,"Чебурашка",1,"Не за рулём=)",14,"Geely");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (305,3,"Гаичка",1067,"ZloyUchitel ",2,"В сети",15,"Honda");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (306,3,"Галаксиина",1068,"_V1meR_",2,"Не беспокоить",16,"Hummer");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (307,3,"Галеодида",1069,"GLkkk ",1,"Ковыряюсь в тачке",17,"Hyundai");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (308,3,"Галиктида",1070,"Сделан в СССР",1,"На работе",18,"Infiniti");
-INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (309,3,"Галлица",1071,"ŔěĐ βųζζ",2,"Весь в ремонте",15,"Honda");
+INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (309,3,"Галлица",1071,"??? ????",2,"Весь в ремонте",15,"Honda");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (310,3,"Галстучник",1072,"pudov",2,"Не за рулём=)",16,"Hummer");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (311,3,"Гамбузия",1073,"n1ntendo",1,"В сети",17,"Hyundai");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (312,3,"Гаплозома",1074,"ZhanBratan",1,"Не беспокоить",18,"Infiniti");
-INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (313,3,"Гарна",1075,"▒▓█ϻнё★ÞÓkhϋŷ█▓▒",2,"Ковыряюсь в тачке",19,"Jaguar");
+INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (313,3,"Гарна",1075,"????нё???kh?????",2,"Ковыряюсь в тачке",19,"Jaguar");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (314,3,"Гарпия",1076,"mikrob ",2,"На работе",16,"Hummer");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (315,3,"Гастеруптиида",1077,"Tiger ",1,"Весь в ремонте",17,"Hyundai");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (316,3,"Гасторнитид",1078,"Очкастый мачо",1,"Не за рулём=)",18,"Infiniti");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (317,3,"Гаур",1079,"Soul Reaper ",2,"В сети",19,"Jaguar");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (318,3,"Геерия",1080,"MachoMen ",2,"Не беспокоить",20,"Jeep");
-INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (319,3,"Волкозуб",1081,"Крылья◐ С۞ветов◐ Чемпи☼н",1,"Ковыряюсь в тачке",17,"Hyundai");
+INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (319,3,"Волкозуб",1081,"Крылья? С?ветов? Чемпи?н",1,"Ковыряюсь в тачке",17,"Hyundai");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (320,3,"Ворона",1082,"-=VетеR=",1,"На работе",18,"Infiniti");
-INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (321,3,"Вьюрок",1083,".ιllιlι.ιl.[►].ιllιlι.ιl.",2,"Весь в ремонте",19,"Jaguar");
+INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (321,3,"Вьюрок",1083,".?ll?l?.?l.[?].?ll?l?.?l.",2,"Весь в ремонте",19,"Jaguar");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (322,3,"Гага-гребенушка",1084,"Constant ",2,"Не за рулём=)",20,"Jeep");
-INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (323,3,"Гадрозавр",1085,"๖ۣۜĆǿǿł™",1,"В сети",21,"KIA");
-INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (324,3,"Гадрозавроид",1086,"Тαηцγй κακ Кαδαη",1,"Не беспокоить",18,"Infiniti");
+INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (323,3,"Гадрозавр",1085,"???????™",1,"В сети",21,"KIA");
+INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (324,3,"Гадрозавроид",1086,"Т??ц?й ??? К????",1,"Не беспокоить",18,"Infiniti");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (325,3,"Газель",1087,"VажNыЙ_игROK ",2,"Ковыряюсь в тачке",19,"Jaguar");
-INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (326,3,"Гайнозавр",1088,"☃Snegovik☃",2,"На работе",20,"Jeep");
+INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (326,3,"Гайнозавр",1088,"?Snegovik?",2,"На работе",20,"Jeep");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (327,3,"Галаксия",1089,".::ЙоПт'ик::.",1,"Весь в ремонте",21,"KIA");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (328,3,"Галехира",1090,"МиНзДрАв",1,"Не за рулём=)",22,"Lamborghini");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (329,3,"Галка",1091,"=..NiKnImUs..=",2,"В сети",19,"Jaguar");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (330,3,"Галлюцигения",1092,"SpOrtkK",2,"Не беспокоить",20,"Jeep");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (331,3,"Гамадрил",1093,"_*очень приятно царь*_",1,"Ковыряюсь в тачке",21,"KIA");
-INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (332,3,"Гаммарус",1094,"๖ۣۣۜZβø₦ẫ®ь",1,"На работе",22,"Lamborghini");
-INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (333,3,"Гаплокантозавр",1095,"๖ۣۣۜAvąŧą®чųķ",2,"Весь в ремонте",23,"Lancia");
+INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (332,3,"Гаммарус",1094,"????Z????®ь",1,"На работе",22,"Lamborghini");
+INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (333,3,"Гаплокантозавр",1095,"????Av???®ч??",2,"Весь в ремонте",23,"Lancia");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (334,3,"Гарпаголест",1096,"BeLik",2,"Не за рулём=)",20,"Jeep");
-INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (335,3,"Гаршнеп",1097,"Mįşş Ķøşĥķå",1,"В сети",21,"KIA");
+INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (335,3,"Гаршнеп",1097,"M??? ??????",1,"В сети",21,"KIA");
 INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (336,3,"Гастония",1098,"†PluS†",1,"Не беспокоить",22,"Lamborghini");
-INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (337,3,"Гастрофолис",1099,"Ӗӂиҝ_β_ҜᴇḊᶏχ",2,"Ковыряюсь в тачке",23,"Lancia");
-INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (338,3,"Гвоздарь",1100,"Ω™Ќųзя™Ω",2,"На работе",24,"Land Rover");
+INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (337,3,"Гастрофолис",1099,"??и?_?_?????",2,"Ковыряюсь в тачке",23,"Lancia");
+INSERT INTO  `Profiles users with car`  (`Car_id`,`model_id`,Car_login,`id`,`Profiles_login`,`Profiles_info`,`active`,Car_name,model_name) VALUES (338,3,"Гвоздарь",1100,"?™Ќ?зя™?",2,"На работе",24,"Land Rover");
 
 CREATE TABLE `posts` (
   `users_id` int unsigned NOT NULL AUTO_INCREMENT COMMENT 'user id from users',
@@ -1167,3 +1222,97 @@ INSERT INTO  `communities_users`  (`community_id`,`users_id`) VALUES (1638781,97
 INSERT INTO  `communities_users`  (`community_id`,`users_id`) VALUES (1654232,98);
 INSERT INTO  `communities_users`  (`community_id`,`users_id`) VALUES (1669683,99);
 INSERT INTO  `communities_users`  (`community_id`,`users_id`) VALUES (1685134,100);
+
+*-- Представления и выборки
+
+
+CREATE OR REPLACE VIEW CARSNAME AS (SELECT
+cm.model_name AS car_model,
+cb.Car_id AS car_brand
+FROM car_model AS cm
+LEFT JOIN car_brand AS cb ON cm.model_name = cb.Car_id)
+UNION ALL 
+(SELECT cm.model_name AS car_model,
+cb.Car_id AS car_brand
+FROM car_model AS cm
+RIGHT JOIN car_brand AS cb ON cm.model_name = cb.Car_id);
+
+SELECT * FROM CARSNAME WHERE car_brand AND car_model IS NOT NULL ;
+
+SELECT * FROM CARSNAME;
+
+CREATE OR REPLACE VIEW ALLUSERS AS (SELECT
+uwc.Car_login_id AS "users with car",
+u2.model_id AS users
+FROM `users with car` AS uwc
+LEFT JOIN users AS u2 ON uwc.Car_login_id = u2.model_id)
+UNION 
+(SELECT uwc.model_id AS "users with car",
+u2.model_id AS users
+FROM `users with car` AS uwc
+LEFT JOIN users AS u2 ON uwc.model_id = u2.model_id);
+
+SELECT * FROM ALLUSERS WHERE `users with car` AND users IS NOT NULL ;
+
+SELECT * FROM ALLUSERS;
+
+
+*--Хранимые процедуры
+
+DROP FUNCTION IF EXISTS `DRIVE2`;
+
+DELIMITER ~~
+
+CREATE FUNCTION `DRIVE2`()
+RETURNS TINYTEXT NO SQL
+BEGIN
+  DECLARE hour INT;
+  SET hour = HOUR(NOW());
+  CASE
+    WHEN hour BETWEEN 0 AND 5 THEN
+      RETURN "Не спиться ? Мы отфильтровали списки ваших единомышленников. Проверьте статус вашего друга";
+    WHEN hour BETWEEN 6 AND 11 THEN
+      RETURN "Доброе утро. Сегодня точно заведётся";
+    WHEN hour BETWEEN 12 AND 17 THEN
+      RETURN "Добрый день. Проводим выборы машины дня";
+    WHEN hour BETWEEN 18 AND 23 THEN
+      RETURN "Добрый вечер. Интересные статьи всегда есть ленте";
+  END CASE;
+END
+~~
+
+DELIMITER ;
+-- ***
+
+SELECT NOW(), `DRIVE2`();
+
+SELECT active, COUNT("В сети") FROM `Profiles users with car` GROUP BY active;
+
+
+DROP TRIGGER IF EXISTS validate_CAR_name_description_insert;
+DROP TRIGGER IF EXISTS validate_CAR_name_description_update;
+
+DELIMITER //
+CREATE TRIGGER validate_CAR_name_description_insert BEFORE INSERT ON car_brand FOR EACH ROW
+BEGIN 	
+	IF NEW.Car_name IS NULL AND NEW.Car_id IS NULL THEN
+	SIGNAL SQLSTATE '45000'
+	SET MESSAGE_TEXT = 'Cannot INSERT if Car_name & description are NULL';
+   END IF;
+  END//
+CREATE TRIGGER validate_CAR_name_Car_id_insert BEFORE UPDATE ON car_brand FOR EACH ROW
+BEGIN 	
+	IF NEW.Car_name IS NULL AND NEW.Car_id IS NULL THEN
+	SIGNAL SQLSTATE '45000'
+	SET MESSAGE_TEXT = 'Cannot INSERT if Car_name & description are NULL';
+   END IF;
+  END//   
+END;
+
+*-- Проверка триггера
+UPDATE car_brand
+	SET Car_name = NULL, Car_id = NULL
+	WHERE Car_id =1;
+
+
+*-- Конец=) 
